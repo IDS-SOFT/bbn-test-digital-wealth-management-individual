@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 /************************************************************************************************************************** */
 /* 
@@ -24,7 +24,7 @@ contract DigitalWealthManagement {
     mapping(address => Portfolio) public portfolios;
 
     event PortfolioCreated(address indexed owner, uint256 initialBalance, UserType userType);
-    event CheckBalance(string text, uint amount);
+    event CheckBalance(uint amount);
 
     constructor() {
         owner = msg.sender;
@@ -34,6 +34,7 @@ contract DigitalWealthManagement {
     function createPortfolio(uint256 initialBalance, UserType userType) external {
         require(userType == UserType.Individual || userType == UserType.Enterprise, "Invalid user type.");
         require(portfolios[msg.sender].owner == address(0), "Portfolio already exists for the user.");
+
         portfolios[msg.sender] = Portfolio(msg.sender, initialBalance, userType);
         totalAssetsUnderManagement += initialBalance;
         emit PortfolioCreated(msg.sender, initialBalance, userType);
@@ -52,11 +53,8 @@ contract DigitalWealthManagement {
     }
     
     function getBalance(address user_account) external returns (uint){
-    
-       string memory data = "User Balance is : ";
        uint user_bal = user_account.balance;
-       emit CheckBalance(data, user_bal );
+       emit CheckBalance(user_bal);
        return (user_bal);
-
     }
 }
